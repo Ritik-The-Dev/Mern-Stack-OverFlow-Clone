@@ -53,5 +53,10 @@
     position: absolute;
     transform: translateX(-100%);
     z-index: 10;
+    background: white;
+    color: black !important;
+  }
+  .left-sidebar a{
+    color: black !important;
   }
 }

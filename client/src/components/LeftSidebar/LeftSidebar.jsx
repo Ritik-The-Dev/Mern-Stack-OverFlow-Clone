@@ -6,11 +6,12 @@ import Globe from "../../assets/Globe.svg";
 const LeftSidebar = ({ slideIn, handleSlideIn }) => {
   const slideInStyle = {
     transform: "translateX(0%)",
-    background:"white"
+    // background:"white"
   };
 
   const slideOutStyle = {
     transform: "translateX(-100%)",
+    background:"white"
   };
 
   return (
