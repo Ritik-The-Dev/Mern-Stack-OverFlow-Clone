@@ -6,7 +6,22 @@ import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
 import RightSidebar from '../../components/RightSidebar/RightSidebar';
 import badWords from 'bad-words-next'
 import en from 'bad-words-next/data/en.json'
+import Filter from 'bad-words'
+import abusiveWords from './abusiveWords.json';
+//
+import {
+	RegExpMatcher,
+	englishDataset,
+	englishRecommendedTransformers,
+} from 'obscenity';
+const matcher = new RegExpMatcher({
+	...englishDataset.build(),
+	...englishRecommendedTransformers,
+});
+//
 
+const filter = new Filter();
+filter.addWords(...abusiveWords.abusiveWords);
 const BADWORDS = new badWords({ data: en })
 
 const AddPublicInfo = ({ slideIn, handleSlideIn }) => {
@@ -25,9 +40,11 @@ const AddPublicInfo = ({ slideIn, handleSlideIn }) => {
     //tweet upload
     const tweetUpload = async ()=>{
     try{
+        let email = await User.result.email
+        let postedBy = await User.result.name
          if(tweet !== ""){
-          const badWordDetect = BADWORDS.check(tweet);
-         if(badWordDetect === true){
+          const badWordDetect = BADWORDS.check(tweet.toLowerCase());
+         if(badWordDetect === true || matcher.hasMatch(tweet.toLowerCase()) || filter.isProfane(tweet.toLowerCase()) === true){
           settweet('');
           return alert(" Cannot Post Bad Word Detected")
         }
@@ -40,9 +57,10 @@ const AddPublicInfo = ({ slideIn, handleSlideIn }) => {
             headers: {
               'Content-Type': 'application/json' // Set the content type header to JSON
             },
-            body: JSON.stringify({ tweet })
+            body: JSON.stringify({ tweet,postedBy,email })
           })
           const res = await data.json();
+
         if(res.success === true){
             alert("Tweet Upload Successfully")
             settweet('')
@@ -69,6 +87,10 @@ const AddPublicInfo = ({ slideIn, handleSlideIn }) => {
 
     const uploadImage = async ()=>{
            try{
+
+            let email = await User.result.email
+        let postedBy = await User.result.name
+
             if (!image) {
                 alert('No image selected.');
                 return;
@@ -88,7 +110,14 @@ const AddPublicInfo = ({ slideIn, handleSlideIn }) => {
                   setimageCaption('');
                   return alert(" Cannot Post Bad Word Detected")
                 }
+                if(filter.isProfane(imageCaption) === true){
+                  setimageCaption('');
+                  return alert(" Cannot Post Bad Word Detected")
+                }
                 formData.append('imageCaption', imageCaption);
+                formData.append('postedBy', postedBy);
+                formData.append('email', email);
+
               }
             
               const data = await fetch(`https://stackbackend-9z32.onrender.com/user/AddImage`, {
@@ -120,6 +149,9 @@ const AddPublicInfo = ({ slideIn, handleSlideIn }) => {
 
 const uploadVideo = async ()=>{
     try{
+      let email = await User.result.email
+        let postedBy = await User.result.name
+
         if (!video) {
             alert('No image selected.');
             return;
@@ -140,7 +172,13 @@ const uploadVideo = async ()=>{
           setvideoCaption('');
           return alert(" Cannot Post Bad Word Detected")
         }
+        if(filter.isProfane(video) === true){
+          setvideoCaption('');
+          return alert(" Cannot Post Bad Word Detected")
+        }
         formData.append('videoCaption', videoCaption);
+        formData.append('postedBy', postedBy);
+        formData.append('email', email);
       }
 
      const data = await fetch(`https://stackbackend-9z32.onrender.com/user/AddVideo`, {

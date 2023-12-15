@@ -1,5 +1,6 @@
 import {React,useEffect,useState}from 'react'
 import './displayPublic.css'
+import moment from "moment";
 import { Link} from 'react-router-dom';
 
 const DisplayPublicPage = () => {
@@ -104,8 +105,8 @@ const gotoTweet = ()=>{
             <div className="box1" key={index}>
             <p className='messsss'>{e.tweet}</p>
           <div className="extra-Details">
-          <p>Posted by -: <span className='postee'>anonymous</span ></p>
-          <p>postedAt -: <span className='postee'>{e.createAt}</span></p>
+          <p>Posted by -: <span className='postee'>{e.postedBy}</span ></p>
+          <p>postedAt -: <span className='postee'>{moment(e.createAt).fromNow()}</span></p>
           </div>
           </div>
           )
@@ -121,13 +122,14 @@ const gotoTweet = ()=>{
         image.map((e,index)=>{
           return(
             <div className="box1" key={index}>
-              <a href={e.imageUrl} target="_blank">
-            <img src={e.imageUrl} alt="img" style={{width:"100%", borderRadius:"1rem"}}/>
+              <a href={e.imageUrl} target="_blank" style={{width:"100%", borderRadius:"1rem",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <img src={e.imageUrl} alt="img" />
             </a>
-            <p>{e.imageCaption}</p>
+
+            <p><span className='postee'>Caption -: </span>{e.imageCaption}</p>
           <div className="extra-Details">
-          <p>Posted by -: <span className='postee'>anonymous</span ></p>
-          <p>postedAt -: <span className='postee'>{e.createAt}</span></p>
+          <p>Posted by -: <span className='postee'>{e.postedBy}</span ></p>
+          <p>postedAt -: <span className='postee'>{moment(e.createAt).fromNow()}</span></p>
           </div>
           </div>
           )
@@ -144,13 +146,13 @@ const gotoTweet = ()=>{
           return(
             <div className="box1" key={index}>
             <video src={e.videoUrl} alt="videoLoading" style={{width:"100%",height:"30vh",borderRadius:"1rem"}} controls />
-            <p>{e.videoCaption}</p>
+            <p><span className='postee'>Caption -: </span>{e.videoCaption}</p>
             <Link to={`/VideoPlayer/${encodeURIComponent(e.videoUrl)}`}>
             <button className='nav-links'>Play in Custom Video Player</button>
           </Link>
           <div className="extra-Details">
-          <p>Posted by -: <span className='postee'>anonymous</span ></p>
-          <p>postedAt -: <span className='postee'>{e.createAt}</span></p>
+          <p>Posted by -: <span className='postee'>{e.postedBy}</span ></p>
+          <p>postedAt -: <span className='postee'>{moment(e.createAt).fromNow()}</span></p>
           </div>
           </div>
           )
